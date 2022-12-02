@@ -7,7 +7,7 @@ wget -N -q --show-progress \
     -O data/question_generation/raw_constraints.jsonl
 
 # END2END dataset
-mkdir -p data/e2enlg/
+mkdir -p data/e2enlg{,_filter}/
 wget -N -q --show-progress \
     https://github.com/tuetschek/e2e-dataset/releases/download/v1.0.0/e2e-dataset.zip \
     -O data/e2enlg/e2e-dataset.zip

@@ -13,7 +13,8 @@ def get_verb_subj(mr):
     assert len(match.groups()) == 2
     return match.group(1), match.group(2)
 
-def e2e_to_masked(input, output):
+
+def e2e_to_masked(input, output, filter_unsatisfied_constraints=False):
     split = RE_SPLIT.match(input.split("/")[-1]).group(1).removesuffix("set")
     print("Processing", split)
 
@@ -24,13 +25,15 @@ def e2e_to_masked(input, output):
 
     data_out = []
     for line_i, line in enumerate(tqdm.tqdm(data)):
-        line = get_constraints(line)
+        line = get_constraints(line, filter=filter_unsatisfied_constraints)
 
-        input_sentence = f"Generate a sentence with the following topics [{line['topic']}]:"
-        target_sentence_tok = tokenizer.tokenize("<BOS> " + line["target_sentence"])
+        input_sentence = f"Generate a sentence with the following topics [ {line['topic']} ]:"
+        target_sentence_tok = tokenizer.tokenize(
+            "<BOS> " + line["target_sentence"])
         input_sentence_tok = tokenizer.tokenize("<BOS> " + input_sentence)
         # none of these constraints have to be explicitly at the start of the sentence
-        constraints_tok = [[tokenizer.tokenize(x) for x in constr] for constr in line["constraints"]]
+        constraints_tok = [
+            [tokenizer.tokenize(x) for x in constr] for constr in line["constraints"]]
 
         target_term_mask = compute_mask(target_sentence_tok, constraints_tok)
         input_term_mask = compute_mask(input_sentence_tok, constraints_tok)
@@ -45,12 +48,12 @@ def e2e_to_masked(input, output):
         }
         data_out.append(line_out)
 
-
     with open(output, "w") as f:
-        f.write("\n".join([json.dumps(x, ensure_ascii=False) for x in data_out]))
+        f.write("\n".join([json.dumps(x, ensure_ascii=False)
+                for x in data_out]))
 
 
-def get_constraints(line):
+def get_constraints(line, filter):
     mrs = [get_verb_subj(mr) for mr in line["mr"].split(", ")]
     constrs = []
 
@@ -101,5 +104,16 @@ def get_constraints(line):
         else:
             print("Skipping", verb)
             continue
-    
-    return {"target_sentence": line["ref"], "constraints": constrs, "topic": "-".join(topic_list), "mrs_parsed": mrs}
+
+    assert len(topic_list) == len(constrs)
+
+    if filter:
+        tmp = [
+            (c, t) for c, t in zip(constrs, topic_list)
+            # only satisfied
+            if any([x.lower() in line["ref"].lower() for x in c])
+        ]
+        constrs = [c for c, t in tmp]
+        topic_list = [t for c, t in tmp]
+
+    return {"target_sentence": line["ref"], "constraints": constrs, "topic": " ".join(topic_list), "mrs_parsed": mrs}
