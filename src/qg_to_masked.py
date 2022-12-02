@@ -1,6 +1,6 @@
 import tqdm
 import json
-from utils import get_flant5_tokenizer
+from utils import get_flant5_tokenizer, compute_mask
 
 def qg_to_masked(input, output):
     from utils import BOS_CONSTRAINTS, BOS_TOKEN
@@ -14,32 +14,6 @@ def qg_to_masked(input, output):
     BOS_CONSTRAINTS = [
         tokenizer.tokenize(BOS_TOKEN + " " + x.capitalize()) for x in BOS_CONSTRAINTS
     ]
-
-
-    def index_subsequence(hay, needle):
-        # inefficient way of finding a subsequence
-        # turn this into Aho-Corasick using regexes
-        for i in range(len(hay) - len(needle)):
-            subhay = hay[i:i + len(needle)]
-            if all(x == y for x, y in zip(subhay, needle)):
-                return i, i + len(needle)
-        return None
-
-
-    def compute_mask(sent_tok, constraints):
-        term_mask = [-1] * len(sent_tok)
-
-        for clause_i, clause in enumerate(constraints):
-            # check if anything from the clause is
-            for literal in clause:
-                indicies = index_subsequence(sent_tok, literal)
-                if indicies is None:
-                    continue
-
-                for i in range(indicies[0], indicies[1]):
-                    term_mask[i] = clause_i
-
-        return term_mask
 
 
     for line in tqdm.tqdm(data):
