@@ -5,7 +5,7 @@ import argparse
 import json
 
 
-def verify(input):
+def qg_verify(input):
     print("Verifying QGTensorizer")
     with open(input, "r") as f:
         data = [json.loads(x) for x in f]
@@ -23,4 +23,4 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument("-i", "--input", default="data/question_generation/test.flant5_aug.jsonl")
     args = args.parse_args()
-    verify(args.input)
+    qg_verify(args.input)
