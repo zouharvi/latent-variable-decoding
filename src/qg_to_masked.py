@@ -6,8 +6,8 @@ import json
 from utils import BOS_CONSTRAINTS, BOS_TOKEN, get_flant5_tokenizer
 
 args = argparse.ArgumentParser()
-args.add_argument("-i", "--input", default="computed/qg_merged.jsonl")
-args.add_argument("-o", "--output", default="computed/qg_masked.flant5_aug.jsonl")
+args.add_argument("-i", "--input", default="data/question_generation/raw_merged.jsonl")
+args.add_argument("-o", "--output", default="data/question_generation/test.flant5_aug.jsonl")
 args = args.parse_args()
 
 data_out = []

@@ -9,13 +9,13 @@ from utils import BOS_CONSTRAINTS
 args = argparse.ArgumentParser()
 args.add_argument(
     "-ic", "--input-constraints",
-    default="computed/qg_constraints.jsonl"
+    default="data/question_generation/raw_constraints.jsonl"
 )
 args.add_argument(
     "-it", "--input-targets",
-    default="computed/qg_targets.jsonl"
+    default="data/question_generation/raw_targets.jsonl"
 )
-args.add_argument("-o", "--output", default="computed/qg_merged.jsonl")
+args.add_argument("-o", "--output", default="data/question_generation/raw_merged.jsonl")
 args = args.parse_args()
 
 data_squad = datasets.load_dataset("squad_v2")

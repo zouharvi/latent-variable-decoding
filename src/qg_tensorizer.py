@@ -19,7 +19,7 @@ class QTDataProcessor:
     DEFAULT_CONFIG = {
         "dataset": "tsmh",
         "plm_tokenizer_name": "flant5_aug",
-        "data_dir": "computed/"
+        "data_dir": "data/question_generation/"
     }
 
     def __init__(self, config=DEFAULT_CONFIG, language='english'):
@@ -44,7 +44,7 @@ class QTDataProcessor:
 
             if self.dataset == "tsmh":
                 paths = {
-                    'test': join(self.data_dir, f'qg_masked.{suffix}')
+                    'test': join(self.data_dir, f'test.{suffix}')
                 }
 
             for split, path in paths.items():
