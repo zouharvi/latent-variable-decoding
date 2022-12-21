@@ -24,27 +24,30 @@ def qg_to_masked(input, output):
             for clause in clause_constrs
         ]
 
-        target_sentence = BOS_TOKEN + " " + line["target_questions"][0]
-        target_sentence_tok = tokenizer.tokenize(target_sentence)
+        target_sentence = line["target_questions"][0]
+        target_sentence_tok = tokenizer.tokenize(BOS_TOKEN + " " + target_sentence)
 
         constraints = [BOS_CONSTRAINTS] + keywords_tok
 
-    input_sentence_tok = tokenizer.tokenize(
-        BOS_TOKEN + " Question about " + " ".join(clause_constrs_single) + ":"
-    )
+        input_sentence = "Question about " + " ".join(clause_constrs_single) + ":"
+        input_sentence_tok = tokenizer.tokenize(
+            BOS_TOKEN + " " + input_sentence
+        )
 
-    target_term_mask = compute_mask(target_sentence_tok, constraints)
-    input_term_mask = compute_mask(input_sentence_tok, constraints)
+        target_term_mask = compute_mask(target_sentence_tok, constraints)
+        input_term_mask = compute_mask(input_sentence_tok, constraints)
 
-    line_out = {
-        "doc_id": line["doc_id"],
-        "input_sentence": input_sentence_tok,
-        "target_sentence": target_sentence_tok,
-        "input_term_mask": input_term_mask,
-        "target_term_mask": target_term_mask,
-        "target_constraints": constraints,
-    }
-    data_out.append(line_out)
+        line_out = {
+            "doc_id": line["doc_id"],
+            "input_sentence": input_sentence_tok,
+            "input_sentence_raw": input_sentence,
+            "target_sentence": target_sentence_tok,
+            "target_sentence_raw": target_sentence,
+            "input_term_mask": input_term_mask,
+            "target_term_mask": target_term_mask,
+            "target_constraints": constraints,
+        }
+        data_out.append(line_out)
 
     with open(output, "w") as f:
         f.write("\n".join([json.dumps(x, ensure_ascii=False) for x in data_out]))
