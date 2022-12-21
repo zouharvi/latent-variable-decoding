@@ -3,7 +3,7 @@
 import os
 
 # make sure we download the data
-os.system("bash ./src/patches/01-download_datasets.sh")
+# os.system("bash ./src/patches/01-download_datasets.sh")
 
 
 from e2e_to_masked import e2e_to_masked

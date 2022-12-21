@@ -41,7 +41,9 @@ def e2e_to_masked(input, output, filter_unsatisfied_constraints=False):
         line_out = {
             "doc_id": f"{split}_{line_i}",
             "input_sentence": input_sentence_tok,
+            "input_sentence_raw": input_sentence,
             "target_sentence": target_sentence_tok,
+            "target_sentence_raw": line["target_sentence"],
             "input_term_mask": input_term_mask,
             "target_term_mask": target_term_mask,
             "target_constraints": constraints_tok,

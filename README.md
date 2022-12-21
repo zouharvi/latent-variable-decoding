@@ -1,4 +1,4 @@
-# Laten Variable Decoding
+# Latent Variable Decoding
 
 This is just a utils support repository for the main project.
 Contact [Eleanor](https://www.elejiang.me/) for more details.
